@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 
 import styles from './ImageComponent.scss';
 import config from '../../config';
+import ColorComponent from '../ColorComponent/ColorComponent';
 
 //define un cubo en el espacio RGB
 class Bucket{
@@ -136,8 +137,15 @@ class ImageComponent extends Component{
 
     render(){
         return(
-            <div>
+            <div className={styles.container}>
                 <canvas id="canvas" className={styles.canvas}></canvas>
+                <div className= "d-flex  ">
+                {
+                    this.state.colors.map((e,index)=>(
+                        <ColorComponent key={index} r={e.r} g={e.g} b={e.b} />
+                    ))
+                }
+                </div>
             </div>
         )
     }

@@ -5,6 +5,7 @@ import FileSelectorComponent from '../FileSelectorComponent/FileSelectorComponen
 import ImageComponent from '../ImageComponent/ImageComponent';
 
 
+
 class AppComponent extends Component{
     constructor(props){
         super(props);
@@ -32,6 +33,8 @@ class AppComponent extends Component{
             <h1>Image palette generator</h1>
             <FileSelectorComponent onChange={this.handleFileOnChange}/>
             <ImageComponent img={this.state.image}/>
+            
+           
             </div>
         )
     }
