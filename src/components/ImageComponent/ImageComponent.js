@@ -30,16 +30,17 @@ class ImageComponent extends Component{
             image_data: null,
             width: 0,
             height: 0,
-            total_pixels: 0
+            total_pixels: 0,
         }
 
         this.readPixels = this.readPixels.bind(this);
         this.getMostPopulated = this.getMostPopulated.bind(this);
         this.calculateAverageColors = this.calculateAverageColors.bind(this);
+        this.calculateEverything = this.calculateEverything.bind(this);
     }
 
     componentDidUpdate(prevProps, prevState){
-        if(prevProps.img != this.props.img){
+        if(prevProps.loading==false && this.props.loading==true){
             let ctx = document.getElementById('canvas').getContext('2d');
             let width = this.props.img.width;
             let height = this.props.img.height;
@@ -56,29 +57,35 @@ class ImageComponent extends Component{
             });            
         }
         if(prevState.image_data != this.state.image_data){
-            let histogram_buckets = [];
+            let calculationPromise = new Promise (this.calculateEverything);
+            calculationPromise.then((average_colors)=>{
+                this.setState({
+                    colors: average_colors,
+                });
+            }).then(this.props.onEnd);                                      
+        }            
+    }
 
-            for(let r=0; r<config.GRID_SIZE;r++){
-                histogram_buckets[r] = [];
-                for(let g=0; g<config.GRID_SIZE;g++){
-                    histogram_buckets[r][g] = [];
-                    for(let b=0; b<config.GRID_SIZE;b++){
-                        let bucket = new Bucket(r*config.STEP_SIZE, (r+1)*config.STEP_SIZE-1, 
-                                            g*config.STEP_SIZE, (g+1)*config.STEP_SIZE-1,
-                                            b*config.STEP_SIZE, (b+1)*config.STEP_SIZE);
-                        histogram_buckets[r][g][b] = bucket;
-                    }
+    calculateEverything(resolve,reject){
+        let histogram_buckets = [];
+        for(let r=0; r<config.GRID_SIZE;r++){
+            histogram_buckets[r] = [];
+            for(let g=0; g<config.GRID_SIZE;g++){
+                histogram_buckets[r][g] = [];
+                for(let b=0; b<config.GRID_SIZE;b++){
+                    let bucket = new Bucket(r*config.STEP_SIZE, (r+1)*config.STEP_SIZE-1, 
+                                        g*config.STEP_SIZE, (g+1)*config.STEP_SIZE-1,
+                                        b*config.STEP_SIZE, (b+1)*config.STEP_SIZE);
+                    histogram_buckets[r][g][b] = bucket;
                 }
             }
+        }
 
-            //aqui metemos todos los pixeles en sus correspondientes buckets
-            this.readPixels(histogram_buckets);
-            let most_populated = this.getMostPopulated(histogram_buckets);
-            let average_colors = this.calculateAverageColors(histogram_buckets, most_populated);
-            this.setState({
-                colors: average_colors
-            });               
-        }            
+        //aqui metemos todos los pixeles en sus correspondientes buckets
+        this.readPixels(histogram_buckets);
+        let most_populated = this.getMostPopulated(histogram_buckets);
+        let average_colors = this.calculateAverageColors(histogram_buckets, most_populated);
+        resolve(average_colors);
     }
 
     readPixels(histogram_buckets){
@@ -149,7 +156,7 @@ class ImageComponent extends Component{
                 <canvas id="canvas" className={styles.canvas}></canvas>
                 <div className= "d-flex  ">
                 {
-                    this.state.colors.map((e,index)=>(
+                    this.state.colors && this.state.colors.map((e,index)=>(
                         <ColorComponent key={index} r={e.r} g={e.g} b={e.b} percentage={e.percentage}/>
                     ))
                 }

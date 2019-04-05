@@ -3,18 +3,20 @@ import React, {Component} from 'react'
 import styles from './AppComponent.scss';
 import FileSelectorComponent from '../FileSelectorComponent/FileSelectorComponent';
 import ImageComponent from '../ImageComponent/ImageComponent';
+import LoadingComponent from '../LoadingComponent/LoadingComponent';
 
 
 
 class AppComponent extends Component{
     constructor(props){
         super(props);
-
         this.state = {
-            image: null,            
+            image: null,
+            loading: false           
         }
 
         this.handleFileOnChange = this.handleFileOnChange.bind(this);
+        this.handleOnEndCalculation = this.handleOnEndCalculation.bind(this);
     }
 
     handleFileOnChange(e){
@@ -22,9 +24,16 @@ class AppComponent extends Component{
         img.src = URL.createObjectURL(e.target.files[0]); // seleccionamos el primero del array de ficheros seleccionados
         img.onload = ()=>{
             this.setState({
-                image: img
+                image: img,
+                loading: true
             });
         };
+    }
+
+    handleOnEndCalculation(){
+        this.setState({
+            loading: false
+        });
     }
 
     render(){
@@ -32,7 +41,8 @@ class AppComponent extends Component{
             <div className={"d-flex flex-column align-items-center "+styles.main}>
             <h1>Image palette generator</h1>
             <FileSelectorComponent onChange={this.handleFileOnChange}/>
-            <ImageComponent img={this.state.image}/>
+            <LoadingComponent loading = {this.state.loading} />
+            <ImageComponent img={this.state.image} loading = {this.state.loading} onEnd={this.handleOnEndCalculation}/>
             
            
             </div>
