@@ -27,7 +27,10 @@ class ImageComponent extends Component{
 
         this.state = {
             colors: [], 
-            image_data: null
+            image_data: null,
+            width: 0,
+            height: 0,
+            total_pixels: 0
         }
 
         this.readPixels = this.readPixels.bind(this);
@@ -46,7 +49,10 @@ class ImageComponent extends Component{
             ctx.drawImage(this.props.img, 0, 0, width, height, 0, 0, config.WIDTH_CANVAS, d_height);
             let imageData = ctx.getImageData(0, 0, config.WIDTH_CANVAS, d_height);
             this.setState({
-                image_data: Uint8ClampedArray.from(imageData.data)
+                image_data: Uint8ClampedArray.from(imageData.data),
+                width: config.WIDTH_CANVAS,
+                height: d_height,
+                total_pixels: config.WIDTH_CANVAS*d_height
             });            
         }
         if(prevState.image_data != this.state.image_data){
@@ -80,7 +86,7 @@ class ImageComponent extends Component{
         let step_size = config.STEP_SIZE;
         this.state.image_data.map((e, index)=>{          
             //el imageData de un canvas contiene todos los pixeles consecutivamente en un array de una dimensión.
-            //cada pixel ocupa 4 bytes (8 bits por cada canal), uno para R,G,B,Alpha respectivamente.
+            //cada pixel ocupa 4 bytes (8 bits por cada canal), uno para R,G,B,Alpha respectivamente.c
             if(index%4 == 0){ //el R
                 vector = {R:0, G:0, B:0};
                 vector.R = e;
@@ -90,8 +96,10 @@ class ImageComponent extends Component{
             }
             else if(index%4 == 2){ //el B
                 vector.B = e;
-                //console.log(Math.floor(vector.R/step_size)+" "+Math.floor(vector.G/step_size)+" "+Math.floor(vector.B/step_size));
-                histogram_buckets[Math.floor(vector.G/step_size)][Math.floor(vector.B/step_size)][Math.floor(vector.R/step_size)].pixels.push(vector);
+                let r=Math.floor(vector.R/step_size) >= config.GRID_SIZE ? Math.floor(vector.R/step_size)-1 : Math.floor(vector.R/step_size);
+                let g=Math.floor(vector.G/step_size) >= config.GRID_SIZE ? Math.floor(vector.G/step_size)-1 : Math.floor(vector.G/step_size);
+                let b=Math.floor(vector.B/step_size) >= config.GRID_SIZE ? Math.floor(vector.B/step_size)-1 : Math.floor(vector.B/step_size);
+                histogram_buckets[r][g][b].pixels.push(vector);
             }
         });
         
@@ -129,7 +137,7 @@ class ImageComponent extends Component{
                 average_g+=histogram_buckets[e.r][e.g][e.b].pixels[i].G;
                 average_b+=histogram_buckets[e.r][e.g][e.b].pixels[i].B;
             }
-            let average_color = { r: Math.floor(average_r/e.size), g: Math.floor(average_g/e.size), b: Math.floor(average_b/e.size)} ;
+            let average_color = { r: Math.floor(average_r/e.size), g: Math.floor(average_g/e.size), b: Math.floor(average_b/e.size), percentage: (e.size/(this.state.total_pixels)*100).toFixed(2)} ;
             colors.push(average_color);
         }));
         return colors;
@@ -142,7 +150,7 @@ class ImageComponent extends Component{
                 <div className= "d-flex  ">
                 {
                     this.state.colors.map((e,index)=>(
-                        <ColorComponent key={index} r={e.r} g={e.g} b={e.b} />
+                        <ColorComponent key={index} r={e.r} g={e.g} b={e.b} percentage={e.percentage}/>
                     ))
                 }
                 </div>
