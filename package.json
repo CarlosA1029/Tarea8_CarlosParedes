@@ -4,8 +4,8 @@
   "description": "A color palette generator from an image",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --hot --inline --colors --progress",
-    "build": "webpack -p --colors"
+    "start": "webpack -p --config webpack-worker.config.js && webpack-dev-server --hot --inline --colors --progress",
+    "build": "webpack -p --config webpack-worker.config.js && webpack -p --colors && webpack --config webpack-worker.config.js"
   },
   "repository": {
     "type": "git",
