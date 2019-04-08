@@ -1,5 +1,12 @@
 @import "../../defaults.scss";
 
 .loading{
-    display:none
+    display:block;
+    position: fixed;
+    top: 50%;
+    background-color: white;
+    pointer-events: none;
+    padding: 40px;
+    border-radius: 8px;
+    opacity: 0.7;
 }

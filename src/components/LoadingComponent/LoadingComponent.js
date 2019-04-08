@@ -12,11 +12,15 @@ class LoadingComponent extends Component{
 
 
     render(){
+        if (this.props.loading)
         return(
-            <div>
-            {this.props.loading && "cargando"}         
+            <div className={styles.loading}> 
+                <div className="spinner-border text-info" role="status">
+                    <span className="sr-only">Cargando...</span>
+                </div>     
             </div>
         )
+        return null;
     }
 }
 

@@ -52,10 +52,10 @@ class ImageComponent extends Component{
             <div className={styles.container}>
                 <canvas id="canvas" className={styles.canvas}></canvas>
                 {      
-                    <div className= "d-flex">
+                    <div className= {styles.palette}>
                     {
                         this.state.colors && this.state.colors.map((e,index)=>(
-                            <ColorComponent key={index} r={e.r} g={e.g} b={e.b} percentage={e.percentage}/>
+                            <ColorComponent index={index} key={index} r={e.r} g={e.g} b={e.b} percentage={e.percentage}/>
                         ))
                     }
                     </div>           

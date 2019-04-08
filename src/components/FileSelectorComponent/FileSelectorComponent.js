@@ -8,7 +8,7 @@ class FileSelectorComponent extends Component{
     }
     render(){
         return(
-            <div>
+            <div className={styles.fileSelector}>
                 Pick an image: <input type="file" name="image" accept="image/*" onChange={this.props.onChange}/>
             </div>
         )

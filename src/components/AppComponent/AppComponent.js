@@ -4,6 +4,7 @@ import styles from './AppComponent.scss';
 import FileSelectorComponent from '../FileSelectorComponent/FileSelectorComponent';
 import ImageComponent from '../ImageComponent/ImageComponent';
 import LoadingComponent from '../LoadingComponent/LoadingComponent';
+import ToastComponent from '../ToastComponent/ToastComponent';
 
 
 
@@ -49,7 +50,8 @@ class AppComponent extends Component{
     render(){
         return(
             <div className={"d-flex flex-column align-items-center "+styles.main}>
-            <h1>Image palette generator</h1>
+            <h1 className={styles.h1}>Image palette generator</h1>
+            <ToastComponent />
             <FileSelectorComponent onChange={this.handleFileOnChange}/>
             <LoadingComponent loading = {this.state.loading} />
             <ImageComponent img={this.state.image} loading = {this.state.loading} onStart={this.handleOnStartCalculation} onEnd={this.handleOnEndCalculation}/>
