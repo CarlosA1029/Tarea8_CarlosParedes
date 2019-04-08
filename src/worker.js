@@ -14,7 +14,8 @@ class Bucket{
 
 self.addEventListener('message', function(e) {
     console.log(e);
-    let result = calculateEverything(e.data.image_data, e.data.total_pixels);
+    let result = calculateEverything(e.data.image_data, e.data.image_data.data.length/4);
+    console.log(e.data.image_data.length/4);
     self.postMessage(result); //devolvemos el resultado al componente webWorker
     self.close();
   });

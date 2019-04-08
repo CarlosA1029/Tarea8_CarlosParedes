@@ -11,11 +11,7 @@ class ImageComponent extends Component{
         super(props);
 
         this.state = {
-            colors: [], 
-            image_data: null,
-            width: 0,
-            height: 0,
-            total_pixels: 0,
+            colors: []
         }
         this.onMessage = this.onMessage.bind(this);
     }
@@ -30,14 +26,9 @@ class ImageComponent extends Component{
             ctx.canvas.height = d_height;
             ctx.drawImage(this.props.img, 0, 0, width, height, 0, 0, config.WIDTH_CANVAS, d_height);
             let imageData = ctx.getImageData(0, 0, config.WIDTH_CANVAS, d_height);
-            this.setState({
-                width: config.WIDTH_CANVAS,
-                height: d_height,
-                total_pixels: config.WIDTH_CANVAS*d_height
-            });
             let worker = new Worker('worker.js');
             worker.onmessage = this.onMessage;
-            worker.postMessage({image_data:imageData, total_pixels: config.WIDTH_CANVAS*d_height});
+            worker.postMessage({image_data:imageData});
         }
     }
 
