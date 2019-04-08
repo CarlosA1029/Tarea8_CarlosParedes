@@ -14,11 +14,12 @@ class ImageComponent extends Component{
             colors: []
         }
         this.onMessage = this.onMessage.bind(this);
+        this.canvas = React.createRef();
     }
 
     componentDidUpdate(prevProps){
         if(prevProps.loading==false && this.props.loading==true){
-            let ctx = document.getElementById('canvas').getContext('2d');
+            let ctx = this.canvas.current.getContext('2d');
             let width = this.props.img.width;
             let height = this.props.img.height;
             let d_height = config.WIDTH_CANVAS * height / width; //calculamos el alto proporcional
@@ -41,12 +42,12 @@ class ImageComponent extends Component{
     render(){
         return(
             <div className={styles.container}>
-                <canvas id="canvas" className={styles.canvas}></canvas>
+                <canvas className={styles.canvas} ref={this.canvas}></canvas>
                 {      
                     <div className= {styles.palette}>
                     {
                         this.state.colors && this.state.colors.map((e,index)=>(
-                            <ColorComponent index={index} key={index} r={e.r} g={e.g} b={e.b} percentage={e.percentage}/>
+                            <ColorComponent key={index} r={e.r} g={e.g} b={e.b} percentage={e.percentage}/>
                         ))
                     }
                     </div>           

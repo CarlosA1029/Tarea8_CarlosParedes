@@ -7,10 +7,11 @@ class ColorComponent extends Component{
         super(props);
         this.rgb2hex = this.rgb2hex.bind(this);
         this.handleOnClick = this.handleOnClick.bind(this);
+        this.ref = React.createRef();
     }
 
     componentDidMount(){
-        $("#color"+this.props.index).popover({content: `R: ${this.props.r}, G: ${this.props.g}, B: ${this.props.b} (${this.props.percentage}%)`, trigger: "hover", placement:"bottom"});
+        $(this.ref.current).popover({content: `R: ${this.props.r}, G: ${this.props.g}, B: ${this.props.b} (${this.props.percentage}%)`, trigger: "hover", placement:"bottom"});
     }
 
     rgb2hex(r,g,b){
@@ -32,8 +33,8 @@ class ColorComponent extends Component{
 
     render(){
         return(
-            <div id={"color"+this.props.index} className={styles.color} style={{backgroundColor: `rgb(${this.props.r}, ${this.props.g}, ${this.props.b})`}}
-             onClick={this.handleOnClick}>
+            <div className={styles.color} style={{backgroundColor: `rgb(${this.props.r}, ${this.props.g}, ${this.props.b})`}}
+             onClick={this.handleOnClick} ref={this.ref}>
             {this.rgb2hex(this.props.r,this.props.g,this.props.b)}
             </div>
         )
