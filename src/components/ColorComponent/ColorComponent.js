@@ -24,7 +24,7 @@ class ColorComponent extends Component{
     handleOnClick(e){
         $('.toast').toast("show");
         var range = document.createRange();
-        range.selectNode(document.getElementById(e.target.id));
+        range.selectNode(this.ref.current);
         window.getSelection().removeAllRanges(); 
         window.getSelection().addRange(range);
         document.execCommand("copy");
